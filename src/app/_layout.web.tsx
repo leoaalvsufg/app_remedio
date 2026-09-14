@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from '@/context/auth-context';
 import { HealthProfileProvider, useHealthProfile } from '@/context/health-profile-context';
 import { createAlarmScheduler } from '@/services/alarm';
 import { armAlarmSound, triggerAlarm } from '@/services/alarm-sound';
+import { presentWebNotification } from '@/services/notifications.web';
 
 function openAlarmRoute(intakeId: string, intakeIds: string[]) {
   if (intakeIds.length > 1) {
@@ -40,6 +41,7 @@ function AppNavigator() {
     const scheduler = createAlarmScheduler(service);
     scheduler.start((trigger) => {
       triggerAlarm();
+      presentWebNotification(trigger.title, trigger.body, `zelo-intake-${trigger.intakeId}`);
       openAlarmRoute(trigger.intakeId, trigger.intakeIds);
     });
     const checkVisibleAlarm = () => {

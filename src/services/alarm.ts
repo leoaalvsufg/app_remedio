@@ -6,6 +6,8 @@ export type AlarmTrigger = {
   intakeId: string;
   intakeIds: string[];
   grouped: boolean;
+  title: string;
+  body: string;
 };
 
 export type AlarmListener = (trigger: AlarmTrigger) => void;
@@ -37,6 +39,10 @@ function buildTrigger(group: IntakeWithMedicine[]): AlarmTrigger {
     intakeId: group[0].id,
     intakeIds,
     grouped: group.length > 1,
+    title: group.length > 1 ? `Hora de ${group.length} medicamentos` : 'Hora do remédio!',
+    body: group.length > 1
+      ? group.map((intake) => intake.medicine.name).join(', ')
+      : `${group[0].medicine.name} — ${group[0].medicine.dosage}`,
   };
 }
 

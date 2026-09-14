@@ -6,13 +6,15 @@ import { Button } from './ui';
 
 export function NotificationBanner() {
   const { notificationsEnabled, enableNotifications, showToast } = useApp();
-  if (notificationsEnabled || Platform.OS === 'web') return null;
+  if (notificationsEnabled) return null;
 
   async function activate() {
     const enabled = await enableNotifications();
     if (!enabled) {
-      showToast('Ative as notificações nas configurações do aparelho.');
-      await Linking.openSettings();
+      showToast(Platform.OS === 'web'
+        ? 'Permita notificações nas configurações deste site.'
+        : 'Ative as notificações nas configurações do aparelho.');
+      if (Platform.OS !== 'web') await Linking.openSettings();
     }
   }
 

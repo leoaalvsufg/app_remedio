@@ -4,6 +4,7 @@ import type { MedicineInput } from '@/types/models';
 import type { MedicineService } from '@/services/medicine-service';
 import { WebMedicineService } from '@/services/web-medicine-service';
 import type { SyncStatus } from '@/services/cloud-sync';
+import { notificationsAllowed, requestNotificationPermission } from '@/services/notifications.web';
 import { useAuth } from './auth-context';
 
 interface AppContextValue {
@@ -35,6 +36,11 @@ export function AppProvider({ children }: PropsWithChildren) {
   const [revision, setRevision] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  useEffect(() => {
+    void notificationsAllowed().then(setNotificationsEnabled);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -57,13 +63,17 @@ export function AppProvider({ children }: PropsWithChildren) {
     service,
     ready: !authLoading,
     revision,
-    notificationsEnabled: false,
+    notificationsEnabled,
     syncStatus: user ? 'synced' : 'offline',
     lastSyncedAt,
     toast,
     showToast: setToast,
     dismissToast,
-    enableNotifications: async () => false,
+    enableNotifications: async () => {
+      const enabled = await requestNotificationPermission();
+      setNotificationsEnabled(enabled);
+      return enabled;
+    },
     createMedicine: async (input) => {
       const id = await service.createMedicine(input);
       setRevision((current) => current + 1);
@@ -99,5 +109,5 @@ export function useApp() {
 }
 
 export async function getCurrentNotificationPermission() {
-  return false;
+  return notificationsAllowed();
 }
