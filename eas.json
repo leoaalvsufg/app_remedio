@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/eas.json",
+  "cli": {
+    "version": ">= 24.3.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "production": {
+      "distribution": "store",
+      "autoIncrement": true,
+      "credentialsSource": "remote",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://mhztkvhonnzhckmaxvvv.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_swio03dfqBnTx7b9AuiMAA_9_hLzj-I"
+      },
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {}
+    }
+  }
+}

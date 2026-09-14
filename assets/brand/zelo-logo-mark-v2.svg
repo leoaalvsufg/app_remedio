@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2F6FF"/>
+      <stop offset="1" stop-color="#DDE7FB"/>
+    </linearGradient>
+    <clipPath id="capsuleClip">
+      <rect x="172" y="262" width="680" height="500" rx="250"/>
+    </clipPath>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#102A56" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#warm)"/>
+
+  <g transform="rotate(-8 512 512)" filter="url(#shadow)">
+    <g clip-path="url(#capsuleClip)">
+      <rect x="172" y="262" width="680" height="250" fill="#F59E0B"/>
+      <rect x="172" y="512" width="680" height="250" fill="#EF4444"/>
+    </g>
+
+    <rect x="172" y="262" width="680" height="500" rx="250" fill="none" stroke="#B23A3A" stroke-width="14" stroke-opacity="0.55"/>
+    <line x1="172" y1="512" x2="852" y2="512" stroke="#B23A3A" stroke-width="10" stroke-opacity="0.45"/>
+
+    <path
+      d="M 408 540
+         L 488 612
+         L 660 432"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="56"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+  </g>
+</svg>

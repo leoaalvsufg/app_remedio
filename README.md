@@ -1,56 +1,73 @@
-# Welcome to your Expo app 👋
+# Zelo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo para organizar medicamentos, horários e lembretes de tomada, com suporte a fotos, histórico e acompanhamento de saúde.
 
-## Get started
+## Recursos
 
-1. Install dependencies
+- Cadastro de medicamentos e horários flexíveis
+- Lembretes locais e alarmes de tomada
+- Registro de doses tomadas, adiadas ou ignoradas
+- Consultas ao assistente por texto ou foto
+- Sincronização opcional com Supabase
+- Experiência para Android, iOS e web
 
-   ```bash
-   npm install
-   ```
+## Tecnologias
 
-2. Start the app
+- React Native 0.86 e React 19
+- Expo SDK 57 e Expo Router
+- TypeScript
+- SQLite para persistência local
+- Supabase para autenticação, sincronização e Edge Functions
+- Vercel para publicação web
 
-   ```bash
-   npx expo start
-   ```
+## Requisitos
 
-In the output, you'll find options to open the app in a
+- Node.js `^22.13.0`, `^24.3.0` ou `>=25.0.0`
+- npm
+- Expo Go ou um simulador/emulador para testes nativos
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Configuração
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Instale as dependências:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Crie o arquivo local de ambiente:
 
-### Other setup steps
+```bash
+cp .env.example .env.local
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Preencha as variáveis públicas do Supabase em `.env.local`. Esse arquivo não deve ser commitado.
 
-## Learn more
+## Desenvolvimento
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Outros comandos disponíveis:
 
-## Join the community
+```bash
+npm run android
+npm run ios
+npm run web
+npm run lint
+npm run build:web
+npx tsc --noEmit
+```
 
-Join our community of developers creating universal apps.
+## Supabase
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+As migrations e a Edge Function do assistente estão em `supabase/`. O arquivo `supabase/functions/.env.example` documenta as variáveis necessárias no ambiente da função.
+
+## Documentação
+
+- [Plano do projeto](docs/PROJECT_PLAN.md)
+- [Especificação de design](docs/DESIGN_SPEC.md)
+
+## Licença
+
+Este projeto é distribuído sob os termos do arquivo [LICENSE](LICENSE).
