@@ -10,6 +10,8 @@ export type AlarmTrigger = {
 
 export type AlarmListener = (trigger: AlarmTrigger) => void;
 
+const ALARM_GRACE_WINDOW_MS = 5 * 60_000;
+
 export interface AlarmScheduler {
   start(listener: AlarmListener): void;
   stop(): void;
@@ -46,12 +48,12 @@ export function createAlarmScheduler(service: MedicineService, intervalMs = 20_0
   async function tick() {
     if (!listener) return;
     const now = Date.now();
-    const pending = await service.listPendingNotifications();
+    const pending = (await service.listDayIntakes(now)).filter((intake) => intake.status === 'pending');
     const groups = groupNearby(pending);
     for (const group of groups) {
       const first = group[0];
       const diff = first.scheduledAt - now;
-      if (diff <= 0 && diff > -60_000) {
+      if (diff <= 0 && diff > -ALARM_GRACE_WINDOW_MS) {
         const key = `${first.id}|${first.scheduledAt}`;
         const last = firedAt.get(key);
         if (last && now - last < 5 * 60_000) continue;

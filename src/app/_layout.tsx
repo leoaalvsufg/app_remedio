@@ -2,7 +2,7 @@ import { router, Stack, type Href, useSegments } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
 import { Suspense, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { AppState, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import { LoadingState } from '@/components/ui';
 import { ToastHost } from '@/components/toast-host';
@@ -11,52 +11,14 @@ import { AuthProvider, useAuth } from '@/context/auth-context';
 import { HealthProfileProvider, useHealthProfile } from '@/context/health-profile-context';
 import { colors } from '@/constants/theme';
 import { migrateDatabase } from '@/data/database';
-import { createAlarmScheduler } from '@/services/alarm';
-import { triggerAlarm } from '@/services/alarm-sound';
 import { useNotificationRouting } from '@/hooks/use-notification-routing';
 
-function openAlarmRoute(intakeId: string, intakeIds: string[]) {
-  if (intakeIds.length > 1) {
-    router.push({ pathname: '/alerta/grupo', params: { intakeIds: JSON.stringify(intakeIds) } });
-  } else {
-    router.push({ pathname: '/alerta/[intakeId]', params: { intakeId } });
-  }
-}
-
 function AppNavigator() {
-  const { ready, service, revision, notificationsEnabled } = useApp();
+  const { ready } = useApp();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: healthLoading } = useHealthProfile();
   const segments = useSegments();
   useNotificationRouting();
-
-  useEffect(() => {
-    if (!ready || !notificationsEnabled) return undefined;
-    const scheduler = createAlarmScheduler(service);
-    scheduler.start((trigger) => {
-      triggerAlarm();
-      openAlarmRoute(trigger.intakeId, trigger.intakeIds);
-    });
-    const appStateSub = AppState.addEventListener('change', (state) => {
-      if (state === 'active') void scheduler.tick();
-    });
-    return () => {
-      scheduler.stop();
-      appStateSub.remove();
-    };
-  }, [notificationsEnabled, ready, revision, service]);
-
-  useEffect(() => {
-    if (!ready || Platform.OS !== 'web') return undefined;
-    const scheduler = createAlarmScheduler(service);
-    scheduler.start((trigger) => {
-      triggerAlarm();
-      openAlarmRoute(trigger.intakeId, trigger.intakeIds);
-    });
-    return () => {
-      scheduler.stop();
-    };
-  }, [ready, revision, service]);
 
   useEffect(() => {
     const segmentList = segments as string[];

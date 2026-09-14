@@ -8,12 +8,51 @@ import { colors } from '@/constants/theme';
 import { AppProvider, useApp } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
 import { HealthProfileProvider, useHealthProfile } from '@/context/health-profile-context';
+import { createAlarmScheduler } from '@/services/alarm';
+import { armAlarmSound, triggerAlarm } from '@/services/alarm-sound';
+
+function openAlarmRoute(intakeId: string, intakeIds: string[]) {
+  if (intakeIds.length > 1) {
+    router.push({ pathname: '/alerta/grupo', params: { intakeIds: JSON.stringify(intakeIds) } });
+  } else {
+    router.push({ pathname: '/alerta/[intakeId]', params: { intakeId } });
+  }
+}
 
 function AppNavigator() {
-  const { ready } = useApp();
+  const { ready, revision, service } = useApp();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: healthLoading } = useHealthProfile();
   const segments = useSegments();
+
+  useEffect(() => {
+    const arm = () => armAlarmSound();
+    window.addEventListener('pointerdown', arm, { once: true });
+    window.addEventListener('keydown', arm, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', arm);
+      window.removeEventListener('keydown', arm);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return undefined;
+    const scheduler = createAlarmScheduler(service);
+    scheduler.start((trigger) => {
+      triggerAlarm();
+      openAlarmRoute(trigger.intakeId, trigger.intakeIds);
+    });
+    const checkVisibleAlarm = () => {
+      if (document.visibilityState === 'visible') void scheduler.tick();
+    };
+    window.addEventListener('focus', checkVisibleAlarm);
+    document.addEventListener('visibilitychange', checkVisibleAlarm);
+    return () => {
+      scheduler.stop();
+      window.removeEventListener('focus', checkVisibleAlarm);
+      document.removeEventListener('visibilitychange', checkVisibleAlarm);
+    };
+  }, [ready, revision, service]);
 
   useEffect(() => {
     const segmentList = segments as string[];
